@@ -25,7 +25,11 @@ func deployVM() cli.ActionFunc {
 		}
 		env := ctx.String("env")
 
-		t, err := deployer.NewTFPluginClient(mnemonics, "sr25519", env, "", "", "", 100, false)
+		t, err := deployer.NewTFPluginClient(
+			mnemonics,
+			deployer.WithNetwork(env),
+			deployer.WithRMBTimeout(100),
+		)
 		if err != nil {
 			return err
 		}
@@ -56,7 +60,7 @@ func deployVM() cli.ActionFunc {
 		if err != nil {
 			return errors.Wrapf(err, "failed to deploy vm on node %d", node)
 		}
-		resVM, err := t.State.LoadVMFromGrid(node, vm.Name, dl.Name)
+		resVM, err := t.State.LoadVMFromGrid(c, node, vm.Name, dl.Name)
 		if err != nil {
 			return errors.Wrapf(err, "failed to load vm from node %d", node)
 		}
@@ -68,16 +72,17 @@ func deployVM() cli.ActionFunc {
 		return nil
 	}
 }
+
 func buildNetwork(name, solutionType string, nodes []uint32) workloads.ZNet {
-	return workloads.ZNet{
-		Name:  name,
-		Nodes: nodes,
-		IPRange: gridtypes.NewIPNet(net.IPNet{
-			IP:   net.IPv4(10, 20, 0, 0),
-			Mask: net.CIDRMask(16, 32),
-		}),
-		SolutionType: solutionType,
-	}
+    return workloads.ZNet{
+        Name:         name,
+        Nodes:        nodes,
+        IPRange:      gridtypes.NewIPNet(net.IPNet{
+            IP:   net.IPv4(10, 20, 0, 0),
+            Mask: net.CIDRMask(16, 32),
+        }),
+        SolutionType: solutionType,
+    }
 }
 
 func generateWgPrivKey() error {
