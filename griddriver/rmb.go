@@ -7,7 +7,7 @@ import (
 	"time"
 
 	substrate "github.com/threefoldtech/tfchain/clients/tfchain-client-go"
-	"github.com/threefoldtech/tfgrid-sdk-go/rmb-sdk-go/direct"
+	"github.com/threefoldtech/tfgrid-sdk-go/rmb-sdk-go/peer"
 	"github.com/threefoldtech/zos/pkg"
 	"github.com/threefoldtech/zos/pkg/gridtypes"
 	"github.com/urfave/cli"
@@ -15,7 +15,7 @@ import (
 
 type rmbCmdArgs map[string]interface{}
 
-func rmbDecorator(action func(c *cli.Context, client *direct.RpcCLient) (interface{}, error)) cli.ActionFunc {
+func rmbDecorator(action func(c *cli.Context, client *peer.RpcClient) (interface{}, error)) cli.ActionFunc {
 	return func(c *cli.Context) error {
 		substrate_url := c.String("substrate")
 		mnemonics := c.String("mnemonics")
@@ -27,10 +27,16 @@ func rmbDecorator(action func(c *cli.Context, client *direct.RpcCLient) (interfa
 			return fmt.Errorf("failed to connect to substrate: %w", err)
 		}
 		defer sub.Close()
-		client, err := direct.NewRpcClient(context.Background(), direct.KeyTypeSr25519, mnemonics, relay_url, "tfgrid-vclient", sub, true)
 
+		client, err := peer.NewRpcClient(
+			context.Background(),
+			mnemonics,
+			subManager,
+			peer.WithRelay(relay_url),
+			peer.WithSession("tfgrid-vclient"),
+		)
 		if err != nil {
-			return fmt.Errorf("failed to create direct client: %w", err)
+			return fmt.Errorf("failed to create peer client: %w", err)
 		}
 
 		res, err := action(c, client)
@@ -44,7 +50,7 @@ func rmbDecorator(action func(c *cli.Context, client *direct.RpcCLient) (interfa
 	}
 }
 
-func rmbCall(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
+func rmbCall(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	cmd := c.String("cmd")
 	payload := c.String("payload")
@@ -70,7 +76,7 @@ func rmbCall(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
 	return string(b), nil
 }
 
-func deploymentChanges(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
+func deploymentChanges(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	contractID := c.Uint64("contract_id")
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -90,7 +96,7 @@ func deploymentChanges(c *cli.Context, client *direct.RpcCLient) (interface{}, e
 	return string(res), nil
 }
 
-func deploymentDeploy(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
+func deploymentDeploy(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	data := c.String("data")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -109,7 +115,7 @@ func deploymentDeploy(c *cli.Context, client *direct.RpcCLient) (interface{}, er
 	return nil, nil
 }
 
-func deploymentGet(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
+func deploymentGet(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	data := c.String("data")
 
@@ -134,7 +140,7 @@ func deploymentGet(c *cli.Context, client *direct.RpcCLient) (interface{}, error
 	return string(json), nil
 }
 
-func nodeTakenPorts(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
+func nodeTakenPorts(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	var takenPorts []uint16
 
@@ -152,7 +158,7 @@ func nodeTakenPorts(c *cli.Context, client *direct.RpcCLient) (interface{}, erro
 	return string(json), nil
 }
 
-func getNodePublicConfig(c *cli.Context, client *direct.RpcCLient) (interface{}, error) {
+func getNodePublicConfig(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
