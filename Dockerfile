@@ -1,5 +1,4 @@
-FROM docker.io/golang:1.20-alpine as builder
-
+FROM golang:1.21-alpine as builder
 
 WORKDIR /src
 
@@ -7,7 +6,7 @@ ADD . /src
 
 RUN apk add build-base
 
-RUN cd web3gw/server &&\
+RUN cd web3gw &&\
     GOOS=linux CGO_ENABLED=1 go build -o webproxy &&\
     chmod +x webproxy
 
@@ -15,7 +14,7 @@ FROM alpine:3.14
 
 ARG SFTPGOBRANCH
 
-COPY --from=builder /src/web3gw/server/webproxy /usr/bin/webproxy
+COPY --from=builder /src/web3gw/webproxy /usr/bin/webproxy
 
 COPY --from=builder /src/sftpgo.json /var/lib/sftpgo/sftpgo.json
 
