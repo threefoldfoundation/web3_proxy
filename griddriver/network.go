@@ -47,7 +47,7 @@ func deployVM() cli.ActionFunc {
 
 		mounts := []workloads.Disk{}
 		vm.NetworkName = networkName
-		dl := workloads.NewDeployment(vm.Name, node, solutionType, nil, networkName, mounts, nil, []workloads.VM{vm}, nil)
+		dl := workloads.NewDeployment(vm.Name, node, solutionType, nil, networkName, mounts, nil, []workloads.VM{vm}, nil, nil)
 
 		c, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
