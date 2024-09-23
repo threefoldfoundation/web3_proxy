@@ -491,6 +491,60 @@ func main() {
 				},
 				Action: rmbDecorator(rmbCall),
 			},
+			{
+				Name:  "kvstore-set",
+				Usage: "Set a key value on the kvstore in the chain.",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:  "substrate",
+						Value: "wss://tfchain.grid.tf/ws",
+						Usage: "substrate URL",
+					},
+					cli.StringFlag{
+						Name:     "mnemonics",
+						Usage:    "user mnemonics",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:     "key",
+						Usage:    "The key to be saved on the TFChain KVStore.",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:     "value",
+						Usage:    "The value to be saved on the key on the TFChain KVStore.",
+						Required: true,
+					},
+				},
+				Action: substrateDecorator(kvstoreSetKeyValue),
+			},
+			{
+				Name:  "kvstore-get",
+				Usage: "Get a value from the kvstore from the chain.",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:  "substrate",
+						Value: "wss://tfchain.grid.tf/ws",
+						Usage: "substrate URL",
+					},
+					cli.StringFlag{
+						Name:     "mnemonics",
+						Usage:    "user mnemonics",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:     "key",
+						Usage:    "The key to be saved on the TFChain KVStore.",
+						Required: true,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					key := c.String("key")
+					substrateURL := c.String("substrate")
+					mnemonics := c.String("mnemonics")
+					return kvstoreGetKeyValue(c, substrateURL, mnemonics, key)
+				},
+			},
 		},
 	}
 

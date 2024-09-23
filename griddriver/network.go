@@ -74,15 +74,15 @@ func deployVM() cli.ActionFunc {
 }
 
 func buildNetwork(name, solutionType string, nodes []uint32) workloads.ZNet {
-    return workloads.ZNet{
-        Name:         name,
-        Nodes:        nodes,
-        IPRange:      gridtypes.NewIPNet(net.IPNet{
-            IP:   net.IPv4(10, 20, 0, 0),
-            Mask: net.CIDRMask(16, 32),
-        }),
-        SolutionType: solutionType,
-    }
+	return workloads.ZNet{
+		Name:  name,
+		Nodes: nodes,
+		IPRange: gridtypes.NewIPNet(net.IPNet{
+			IP:   net.IPv4(10, 20, 0, 0),
+			Mask: net.CIDRMask(16, 32),
+		}),
+		SolutionType: solutionType,
+	}
 }
 
 func generateWgPrivKey() error {

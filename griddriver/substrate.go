@@ -149,3 +149,26 @@ func signDeployment(ctx *cli.Context, sub *substrate.Substrate, identity substra
 	sig := hex.EncodeToString(signatureBytes)
 	return sig, nil
 }
+
+func kvstoreSetKeyValue(ctx *cli.Context, sub *substrate.Substrate, identity substrate.Identity) (interface{}, error) {
+	key := ctx.String("key")
+	value := ctx.String("value")
+	err := sub.KVStoreSet(identity, key, value)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to set the key")
+	}
+
+	return key, nil
+}
+
+func kvstoreGetKeyValue(ctx *cli.Context, sub *substrate.Substrate, identity substrate.Identity) (interface{}, error) {
+	key := ctx.String("key")
+	val, err := sub.KVStoreGet(identity, key)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get the key")
+	}
+
+	return val, nil
+}
