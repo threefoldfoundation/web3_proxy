@@ -152,11 +152,18 @@ func signDeployment(ctx *cli.Context, sub *substrate.Substrate, identity substra
 }
 
 func batchAllCreateContract(ctx *cli.Context, sub *substrate.Substrate, identity substrate.Identity) (interface{}, error) {
+	body := ctx.String("contracts-body")
 	data := []byte(ctx.String("contracts-data"))
 
 	contractData := []substrate.BatchCreateContractData{}
 	if err := json.Unmarshal(data, &contractData); err != nil {
 		return nil, fmt.Errorf("failed to decode contract data: %w", err)
+	}
+
+	for id := range contractData {
+		if contractData[id].Name == "" {
+			contractData[id].Body = body
+		}
 	}
 
 	contractIds, err := sub.BatchAllCreateContract(identity, contractData)
@@ -169,7 +176,7 @@ func batchAllCreateContract(ctx *cli.Context, sub *substrate.Substrate, identity
 		return nil, fmt.Errorf("failed to encode contract ids: %w", err)
 	}
 
-	return ret, nil
+	return string(ret), nil
 }
 
 func batchCancelContract(ctx *cli.Context, sub *substrate.Substrate, identity substrate.Identity) (interface{}, error) {

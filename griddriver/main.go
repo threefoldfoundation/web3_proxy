@@ -511,6 +511,11 @@ func main() {
 						Usage:    "json encoding of list of substrate BatchCreateContractData objects",
 						Required: true,
 					},
+					cli.StringFlag{
+						Name:     "contracts-body",
+						Usage:    "deployment body string",
+						Required: true,
+					},
 				},
 				Action: substrateDecorator(batchAllCreateContract),
 			},
