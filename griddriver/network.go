@@ -74,15 +74,15 @@ func deployVM() cli.ActionFunc {
 }
 
 func buildNetwork(name, solutionType string, nodes []uint32) workloads.ZNet {
-    return workloads.ZNet{
-        Name:         name,
-        Nodes:        nodes,
-        IPRange:      gridtypes.NewIPNet(net.IPNet{
-            IP:   net.IPv4(10, 20, 0, 0),
-            Mask: net.CIDRMask(16, 32),
-        }),
-        SolutionType: solutionType,
-    }
+	return workloads.ZNet{
+		Name:  name,
+		Nodes: nodes,
+		IPRange: gridtypes.NewIPNet(net.IPNet{
+			IP:   net.IPv4(10, 20, 0, 0),
+			Mask: net.CIDRMask(16, 32),
+		}),
+		SolutionType: solutionType,
+	}
 }
 
 func generateWgPrivKey() error {
@@ -92,6 +92,18 @@ func generateWgPrivKey() error {
 		return errors.Wrapf(err, "failed to generate wireguard secret key")
 	}
 	fmt.Printf("%s %s", key.String(), key.PublicKey().String())
+	return nil
+
+}
+
+func generateWgPublicKey(ctx *cli.Context) error {
+	keyStr := ctx.String("key")
+	key, err := wgtypes.ParseKey(keyStr)
+	if err != nil {
+		return fmt.Errorf("failed to parse private key: %w", err)
+	}
+
+	fmt.Printf("%s", key.PublicKey().String())
 	return nil
 
 }

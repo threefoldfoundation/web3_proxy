@@ -451,6 +451,20 @@ func main() {
 				},
 			},
 			{
+				Name:  "generate-wg-public-key",
+				Usage: "Generates wireguard public key",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:     "key",
+						Usage:    "wireguard private key",
+						Required: true,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return generateWgPublicKey(c)
+				},
+			},
+			{
 				Name:  "rmb",
 				Usage: "Make RMB call",
 				Flags: []cli.Flag{
