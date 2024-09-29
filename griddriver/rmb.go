@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"time"
 
 	substrate "github.com/threefoldtech/tfchain/clients/tfchain-client-go"
@@ -33,7 +34,7 @@ func rmbDecorator(action func(c *cli.Context, client *peer.RpcClient) (interface
 			mnemonics,
 			subManager,
 			peer.WithRelay(relay_url),
-			peer.WithSession("tfgrid-vclient"),
+			peer.WithSession(fmt.Sprintf("tfgrid-vclient-%d", rand.Int63())),
 		)
 		if err != nil {
 			return fmt.Errorf("failed to create peer client: %w", err)
