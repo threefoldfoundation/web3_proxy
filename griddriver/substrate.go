@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 
 	"github.com/pkg/errors"
@@ -148,4 +149,46 @@ func signDeployment(ctx *cli.Context, sub *substrate.Substrate, identity substra
 
 	sig := hex.EncodeToString(signatureBytes)
 	return sig, nil
+}
+
+func batchAllCreateContract(ctx *cli.Context, sub *substrate.Substrate, identity substrate.Identity) (interface{}, error) {
+	body := ctx.String("contracts-body")
+	data := []byte(ctx.String("contracts-data"))
+
+	contractData := []substrate.BatchCreateContractData{}
+	if err := json.Unmarshal(data, &contractData); err != nil {
+		return nil, fmt.Errorf("failed to decode contract data: %w", err)
+	}
+
+	for id := range contractData {
+		if contractData[id].Name == "" {
+			contractData[id].Body = body
+		}
+	}
+
+	contractIds, err := sub.BatchAllCreateContract(identity, contractData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create contracts: %w", err)
+	}
+
+	ret, err := json.Marshal(contractIds)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode contract ids: %w", err)
+	}
+
+	return string(ret), nil
+}
+
+func batchCancelContract(ctx *cli.Context, sub *substrate.Substrate, identity substrate.Identity) (interface{}, error) {
+	data := []byte(ctx.String("contract-ids"))
+	contractIDs := []uint64{}
+	if err := json.Unmarshal(data, &contractIDs); err != nil {
+		return nil, fmt.Errorf("failed to decode contract ids: %w", err)
+	}
+
+	if err := sub.BatchCancelContract(identity, contractIDs); err != nil {
+		return nil, fmt.Errorf("failed to cancel contracts: %w", err)
+	}
+
+	return nil, nil
 }

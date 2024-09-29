@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"time"
 
 	substrate "github.com/threefoldtech/tfchain/clients/tfchain-client-go"
@@ -33,7 +34,7 @@ func rmbDecorator(action func(c *cli.Context, client *peer.RpcClient) (interface
 			mnemonics,
 			subManager,
 			peer.WithRelay(relay_url),
-			peer.WithSession("tfgrid-vclient"),
+			peer.WithSession(fmt.Sprintf("tfgrid-vclient-%d", rand.Int63())),
 		)
 		if err != nil {
 			return fmt.Errorf("failed to create peer client: %w", err)
@@ -144,7 +145,7 @@ func nodeTakenPorts(c *cli.Context, client *peer.RpcClient) (interface{}, error)
 	dst := uint32(c.Uint("dst"))
 	var takenPorts []uint16
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
 	if err := client.Call(ctx, dst, "zos.network.list_wg_ports", nil, &takenPorts); err != nil {
@@ -172,6 +173,6 @@ func getNodePublicConfig(c *cli.Context, client *peer.RpcClient) (interface{}, e
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal public configuration: %w", err)
 	}
-	fmt.Println(string(json))
+
 	return string(json), nil
 }

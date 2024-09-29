@@ -451,6 +451,20 @@ func main() {
 				},
 			},
 			{
+				Name:  "generate-wg-public-key",
+				Usage: "Generates wireguard public key",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:     "key",
+						Usage:    "wireguard private key",
+						Required: true,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					return generateWgPublicKey(c)
+				},
+			},
+			{
 				Name:  "rmb",
 				Usage: "Make RMB call",
 				Flags: []cli.Flag{
@@ -490,6 +504,57 @@ func main() {
 					},
 				},
 				Action: rmbDecorator(rmbCall),
+			},
+			{
+				Name:        "batch-create-contract",
+				Description: "makes a batch create contract call to the tfchain",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:     "mnemonics",
+						Value:    "",
+						Usage:    "user mnemonics",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:  "substrate",
+						Value: "wss://tfchain.grid.tf/ws",
+						Usage: "substrate URL",
+					},
+					cli.StringFlag{
+						Name:     "contracts-data",
+						Usage:    "json encoding of list of substrate BatchCreateContractData objects",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:     "contracts-body",
+						Usage:    "deployment body string",
+						Required: true,
+					},
+				},
+				Action: substrateDecorator(batchAllCreateContract),
+			},
+			{
+				Name:        "batch-cancel-contract",
+				Description: "makes a batch cancel contract call to the tfchain",
+				Flags: []cli.Flag{
+					cli.StringFlag{
+						Name:     "mnemonics",
+						Value:    "",
+						Usage:    "user mnemonics",
+						Required: true,
+					},
+					cli.StringFlag{
+						Name:  "substrate",
+						Value: "wss://tfchain.grid.tf/ws",
+						Usage: "substrate URL",
+					},
+					cli.StringFlag{
+						Name:     "contract-ids",
+						Usage:    "json encoding of list of the contract ids to delete",
+						Required: true,
+					},
+				},
+				Action: substrateDecorator(batchCancelContract),
 			},
 		},
 	}
