@@ -4,14 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"net"
 	"time"
 
 	substrate "github.com/threefoldtech/tfchain/clients/tfchain-client-go"
 	"github.com/threefoldtech/tfgrid-sdk-go/rmb-sdk-go/peer"
-	"github.com/threefoldtech/zos/pkg"
 	"github.com/threefoldtech/zos/pkg/gridtypes"
 	"github.com/urfave/cli"
+	"golang.org/x/exp/rand"
 )
 
 type rmbCmdArgs map[string]interface{}
@@ -60,8 +60,10 @@ func rmbCall(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	defer cancel()
 
 	var pl interface{}
-	if err := json.Unmarshal([]byte(payload), &pl); err != nil {
-		return nil, err
+	if payload != "" {
+		if err := json.Unmarshal([]byte(payload), &pl); err != nil {
+			return nil, err
+		}
 	}
 
 	var res interface{}
@@ -164,7 +166,23 @@ func getNodePublicConfig(c *cli.Context, client *peer.RpcClient) (interface{}, e
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	var pubConfig pkg.PublicConfig
+	var pubConfig struct {
+		// Type define if we need to use
+		// the Vlan field or the MacVlan
+		Type string `json:"type"`
+		// Vlan int16     `json:"vlan"`
+		// Macvlan net.HardwareAddr
+
+		IPv4 gridtypes.IPNet `json:"ipv4"`
+		IPv6 gridtypes.IPNet `json:"ipv6"`
+
+		GW4 net.IP `json:"gw4"`
+		GW6 net.IP `json:"gw6"`
+
+		// Domain is the node domain name like gent01.devnet.grid.tf
+		// or similar
+		Domain string `json:"domain"`
+	}
 
 	if err := client.Call(ctx, dst, "zos.network.public_config_get", nil, &pubConfig); err != nil {
 		return nil, fmt.Errorf("failed to get node public configuration: %w", err)
