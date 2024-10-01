@@ -10,13 +10,15 @@ import (
 	"github.com/urfave/cli"
 )
 
+var version string
+
 func main() {
 	log.SetOutput(io.Discard)
 	zerolog.SetGlobalLevel(zerolog.Disabled)
-
 	app := &cli.App{
-		Name:  "grid",
-		Usage: "Example: grid [COMMAND]",
+		Name:    "griddriver",
+		Usage:   "Example: grid [COMMAND]",
+		Version: version,
 		Commands: []cli.Command{
 			{
 				Name:  "new-node-cn",
