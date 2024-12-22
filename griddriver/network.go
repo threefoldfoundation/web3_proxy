@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/threefoldtech/tfgrid-sdk-go/grid-client/deployer"
 	"github.com/threefoldtech/tfgrid-sdk-go/grid-client/workloads"
-	"github.com/threefoldtech/zos/pkg/gridtypes"
+	"github.com/threefoldtech/tfgrid-sdk-go/grid-client/zos"
 	"github.com/urfave/cli"
 	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
 )
@@ -47,7 +47,7 @@ func deployVM() cli.ActionFunc {
 
 		mounts := []workloads.Disk{}
 		vm.NetworkName = networkName
-		dl := workloads.NewDeployment(vm.Name, node, solutionType, nil, networkName, mounts, nil, []workloads.VM{vm}, nil, nil)
+		dl := workloads.NewDeployment(vm.Name, node, solutionType, nil, networkName, mounts, nil, []workloads.VM{vm}, nil, nil, nil)
 
 		c, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
@@ -77,10 +77,12 @@ func buildNetwork(name, solutionType string, nodes []uint32) workloads.ZNet {
 	return workloads.ZNet{
 		Name:  name,
 		Nodes: nodes,
-		IPRange: gridtypes.NewIPNet(net.IPNet{
-			IP:   net.IPv4(10, 20, 0, 0),
-			Mask: net.CIDRMask(16, 32),
-		}),
+		IPRange: zos.IPNet{
+			IPNet: net.IPNet{
+				IP:   net.IPv4(10, 20, 0, 0),
+				Mask: net.CIDRMask(16, 32),
+			},
+		},
 		SolutionType: solutionType,
 	}
 }

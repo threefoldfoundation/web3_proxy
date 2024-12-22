@@ -6,9 +6,9 @@ toolchain go1.21.0
 
 require (
 	github.com/pkg/errors v0.9.1
-	github.com/threefoldtech/tfchain/clients/tfchain-client-go v0.0.0-20240916164555-1c787e1918a2
-	github.com/threefoldtech/tfgrid-sdk-go/grid-client v0.15.17
-	github.com/threefoldtech/tfgrid-sdk-go/rmb-sdk-go v0.15.17
+	github.com/threefoldtech/tfchain/clients/tfchain-client-go v0.0.0-20241127100051-77e684bcb1b2
+	github.com/threefoldtech/tfgrid-sdk-go/grid-client v0.16.0
+	github.com/threefoldtech/tfgrid-sdk-go/rmb-sdk-go v0.16.0
 	github.com/threefoldtech/zos v0.5.6-0.20240902110349-172a0a29a6ee
 	github.com/urfave/cli v1.22.14
 	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8
@@ -18,6 +18,7 @@ require (
 
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
@@ -25,10 +26,11 @@ require (
 	github.com/gorilla/schema v1.4.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/threefoldtech/tfgrid-sdk-go/grid-proxy v0.15.16 // indirect
+	github.com/threefoldtech/tfgrid-sdk-go/grid-proxy v0.15.18 // indirect
+	github.com/threefoldtech/zos4 v0.5.6-0.20241008102757-02d898c580c4 // indirect
 	github.com/vedhavyas/go-subkey v1.0.3 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 )
@@ -55,7 +57,8 @@ require (
 	github.com/rs/cors v1.11.0 // indirect
 	github.com/rs/zerolog v1.33.0
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	golang.org/x/crypto v0.26.0 // indirect
-	golang.org/x/sys v0.23.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 )
+
