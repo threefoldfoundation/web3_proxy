@@ -56,7 +56,7 @@ func rmbCall(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	cmd := c.String("cmd")
 	payload := c.String("payload")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
 	var pl interface{}
@@ -82,7 +82,7 @@ func rmbCall(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 func deploymentChanges(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	contractID := c.Uint64("contract_id")
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 	var changes []gridtypes.Workload
 	args := rmbCmdArgs{
@@ -102,7 +102,7 @@ func deploymentChanges(c *cli.Context, client *peer.RpcClient) (interface{}, err
 func deploymentDeploy(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
 	data := c.String("data")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
 	var dl gridtypes.Deployment
@@ -122,7 +122,7 @@ func deploymentGet(c *cli.Context, client *peer.RpcClient) (interface{}, error) 
 	dst := uint32(c.Uint("dst"))
 	data := c.String("data")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
 	var args rmbCmdArgs
@@ -147,7 +147,7 @@ func nodeTakenPorts(c *cli.Context, client *peer.RpcClient) (interface{}, error)
 	dst := uint32(c.Uint("dst"))
 	var takenPorts []uint16
 
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
 	if err := client.Call(ctx, dst, "zos.network.list_wg_ports", nil, &takenPorts); err != nil {
@@ -163,7 +163,7 @@ func nodeTakenPorts(c *cli.Context, client *peer.RpcClient) (interface{}, error)
 
 func getNodePublicConfig(c *cli.Context, client *peer.RpcClient) (interface{}, error) {
 	dst := uint32(c.Uint("dst"))
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
 	var pubConfig struct {
