@@ -21,7 +21,8 @@ fi
 
 
 go env -w CGO_ENABLED="0"
-go build -ldflags="-X 'main.version=$(git describe --tags --abbrev=0)'" -o ~/go/bin/griddriver .
+git fetch --tags
+go build -ldflags="-X 'main.version=$(git describe --tags $(git rev-list --tags --max-count=1))'" -o ~/go/bin/griddriver .
 echo build ok
 
 sudo cp ~/go/bin/griddriver /usr/local/bin
