@@ -29,12 +29,15 @@ func rmbDecorator(action func(c *cli.Context, client *peer.RpcClient) (interface
 		}
 		defer sub.Close()
 
+		r := rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
+		sessionID := fmt.Sprintf("tfgrid-vclient-%d", r.Uint64())
+
 		client, err := peer.NewRpcClient(
 			context.Background(),
 			mnemonics,
 			subManager,
 			peer.WithRelay(relay_url),
-			peer.WithSession(fmt.Sprintf("tfgrid-vclient-%d", rand.Int63())),
+			peer.WithSession(sessionID),
 		)
 		if err != nil {
 			return fmt.Errorf("failed to create peer client: %w", err)
